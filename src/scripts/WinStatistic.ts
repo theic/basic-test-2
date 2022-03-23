@@ -39,7 +39,6 @@ export class WinStatistic implements Stat {
     }
 
     print(): void {
-
         const sorted = [...this.data.entries()].sort();
 
         let winSum = 0;
@@ -49,9 +48,7 @@ export class WinStatistic implements Stat {
         let hitsSum = 0;
         let result = `All unique wins (sorted 0…9):\n`;
 
-        for (const s of sorted) {
-            const win = s[0];
-            const hit = s[1];
+        for (const [win, hit] of sorted) {
 
             if ((win > 0 && win < winSmallest) || winSmallest === 0) {
                 winSmallest = win;
@@ -63,7 +60,7 @@ export class WinStatistic implements Stat {
 
             winSum += win * hit;
             hitsSum += hit;
-            result += `${ind++}. ${s[0]}: ${s[1]}\n`;
+            result += `${ind++}. ${win}: ${hit}\n`;
         }
 
         const winAvg = round(winSum / hitsSum, 3);
