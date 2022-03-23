@@ -1,9 +1,13 @@
 import { Stat } from './Simulation';
 
-const round = (n: number) => Math.round(n * 10) / 10;
-const data = new Map<number, number>();
+const round = (n: number, d: number = 1): number => {
+    const decimals = Math.pow(10, d);
+    return Math.round(n * decimals) / decimals;
+}
 
 export class WinStatistic implements Stat {
+
+    data = new Map<number, number>();
 
     log(winAmount: number, hitCount: number): void {
 
@@ -12,9 +16,9 @@ export class WinStatistic implements Stat {
         }
 
         const winAmountR = round(winAmount);
-        const hitCurrent = data.get(winAmountR) || 0;
+        const hitCurrent = this.data.get(winAmountR) || 0;
 
-        data.set(winAmountR, hitCurrent + hitCount);
+        this.data.set(winAmountR, hitCurrent + hitCount);
     }
 
     getHitCount(winAmount: number): number {
@@ -24,19 +28,19 @@ export class WinStatistic implements Stat {
 
         const winAmountR = round(winAmount);
 
-        return data.get(winAmountR) || 0;
+        return this.data.get(winAmountR) || 0;
     }
 
     merge(anotherStat: WinStatistic): void {
-        for (const [win, hit] of Object.entries(data.keys())) {
-            const hitAnother = anotherStat.getHitCount(+win) || 0;
-            data.set(+win, hitAnother + hit);
-        }
+        anotherStat.data.forEach((hit, win) => {
+            const hitAnother = this.getHitCount(win);
+            this.data.set(win, hitAnother + hit);
+        });
     }
 
     print(): void {
 
-        const sorted = [...data.entries()].sort();
+        const sorted = [...this.data.entries()].sort();
 
         let winSum = 0;
         let winSmallest = 0;
@@ -62,11 +66,11 @@ export class WinStatistic implements Stat {
             result += `${ind++}. ${s[0]}: ${s[1]}\n`;
         }
 
-        const winAvg = round(winSum / hitsSum);
+        const winAvg = round(winSum / hitsSum, 3);
         
         result = `The smallest non-zero win is ${winSmallest}, the biggest is ${winBiggest}.\n` + result;
         result = `The average win amount: ${winAvg}.\n` + result;
-        result = `Total win amount: ${round(winSum)}.\n` + result;
+        result = `Total win amount: ${round(winSum, 3)}.\n` + result;
 
         console.log(result);
     }
