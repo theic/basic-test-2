@@ -1,0 +1,16 @@
+{
+    "name": "basic-test-2",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "serve": "node ./dist/js/index",
+        "start": "npm run build && npm run serve"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "typescript": "^4.6.2"
+    }
+}
